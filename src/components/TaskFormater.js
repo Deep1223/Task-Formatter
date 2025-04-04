@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import './TaskFormatter.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 
 const TaskFormatter = () => {
     const [devName, setDevName] = useState('Deep Dungarani');
     const [taskText, setTaskText] = useState('');
-    const [output, setOutput] = useState('');
-    const [copySuccess, setCopySuccess] = useState('');
+    const navigate = useNavigate();
 
     const formatToDayHourMin = (hours, minutes) => {
         let totalMin = (parseInt(hours) * 60) + parseInt(minutes);
@@ -39,73 +37,46 @@ const TaskFormatter = () => {
                 const workedStr = formatToDayHourMin(wh, wm);
                 const estStr = formatToDayHourMin(eh, em);
     
-                formatted += `${taskId} - ${title.trim()} - [${workedStr}] - [${estStr}] - \n`;
+                formatted += `${taskId} - ${title.trim()} - [${workedStr}] - [${estStr}] - Done\n`;
     
                 if (workedMin > estMin * 1.1) {
                     formatted += `Reason:- \n`;
                 }
             }
         }
-    
-        setOutput(formatted.trim());
-        setCopySuccess('');
-    };
-    
 
-    const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(output);
-            setCopySuccess('Copied!');
-            setTimeout(() => setCopySuccess(''), 2000);
-        } catch (err) {
-            setCopySuccess('Failed to copy');
-        }
+        localStorage.setItem('taskOutput', formatted.trim());
+        navigate('/preview');
     };
 
     return (
         <div className="container mt-4 task-formatter">
-            <div className="card shadow">
+            <div className="card shadow-lg">
                 <div className="card-header bg-primary text-white">
                     <h4 className="mb-0">🛠️ Task Formatter</h4>
                 </div>
                 <div className="card-body">
                     <div className="mb-3">
-                        <label className="form-label">Developer Name</label>
+                        <label className="form-label fw-bold">Developer Name</label>
                         <input
                             type="text"
                             value={devName}
                             onChange={(e) => setDevName(e.target.value)}
                             className="form-control"
-                            placeholder="Enter your name"
                         />
                     </div>
                     <div className="mb-3">
-                        <label className="form-label">Task List</label>
+                        <label className="form-label fw-bold">Task List</label>
                         <textarea
-                            rows={10}
+                            rows={8}
                             value={taskText}
                             onChange={(e) => setTaskText(e.target.value)}
                             className="form-control"
-                            placeholder="Paste your task list here"
                         />
                     </div>
                     <button onClick={generateFormattedText} className="btn btn-success w-100">
-                        Generate Formatted Output
+                        Generate & Open Preview
                     </button>
-
-                    {output && (
-                        <div className="mt-4">
-                            <div className="d-flex justify-content-between align-items-center mb-2">
-                                <button className="btn btn-outline-primary" onClick={handleCopy}>
-                                    📋 Copy to Clipboard
-                                </button>
-                                {copySuccess && (
-                                    <span className="text-success fw-bold">{copySuccess}</span>
-                                )}
-                            </div>
-                            <pre className="formatted-output">{output}</pre>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

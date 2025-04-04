@@ -1,0 +1,12 @@
+.task-formatter {
+    max-width: 600px;
+    margin: auto;
+}
+
+.formatted-output {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
