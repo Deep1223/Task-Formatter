@@ -1,0 +1,12 @@
+.task-formatter .card {
+    border-radius: 12px;
+}
+
+.task-formatter .formatted-output {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    font-family: monospace;
+}
