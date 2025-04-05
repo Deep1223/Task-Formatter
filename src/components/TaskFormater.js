@@ -37,7 +37,7 @@ const TaskFormatter = () => {
                 const workedStr = formatToDayHourMin(wh, wm);
                 const estStr = formatToDayHourMin(eh, em);
     
-                formatted += `${taskId} - ${title.trim()} - [${workedStr}] - [${estStr}] - Done\n`;
+                formatted += `${taskId} - ${title.trim()} - [${workedStr}] - [${estStr}] - \n`;
     
                 if (workedMin > estMin * 1.1) {
                     formatted += `Reason:- \n`;
