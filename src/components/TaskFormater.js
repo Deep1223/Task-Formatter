@@ -1,3 +1,4 @@
+// TaskFormatter.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +7,6 @@ const TaskFormatter = () => {
     const [taskText, setTaskText] = useState('');
     const navigate = useNavigate();
 
-    // Load devName from localStorage on first render
     useEffect(() => {
         const storedName = localStorage.getItem('devName');
         if (storedName) {
@@ -14,12 +14,30 @@ const TaskFormatter = () => {
         }
     }, []);
 
-    // Save devName to localStorage whenever it changes
     useEffect(() => {
         if (devName.trim() !== '') {
             localStorage.setItem('devName', devName);
         }
     }, [devName]);
+
+    useEffect(() => {
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+
+        const now = new Date();
+        const reminderHour = 17;
+        const delay = new Date().setHours(reminderHour, 0, 0, 0) - now;
+
+        if (delay > 0) {
+            const timer = setTimeout(() => {
+                new Notification('🛠️ Reminder', {
+                    body: 'Don’t forget to update today’s task list!',
+                });
+            }, delay);
+            return () => clearTimeout(timer);
+        }
+    }, []);
 
     const formatToDayHourMin = (hours, minutes) => {
         let totalMin = (parseInt(hours) * 60) + parseInt(minutes);
@@ -41,6 +59,9 @@ const TaskFormatter = () => {
 
         let formatted = `Update List (${today})\nDeveloper Name:- ${devName}\n\n`;
 
+        let workedTotal = 0;
+        let estTotal = 0;
+
         for (let line of lines) {
             const match = line.match(/\(?\s*(IIS\/TSK-\d+)\)?\s*[-:)]?\s*(.*?)\s*-\s*Worked Time:\s*(\d{1,2}):(\d{1,2}):\d{1,2}\s*\/\s*Est\. Time:\s*(\d{1,2}):(\d{1,2})/i);
 
@@ -57,8 +78,25 @@ const TaskFormatter = () => {
                 if (workedMin > estMin * 1.1) {
                     formatted += `Reason:- \n`;
                 }
+
+                workedTotal += workedMin;
+                estTotal += estMin;
             }
         }
+
+        const workedStr = formatToDayHourMin(Math.floor(workedTotal / 60), workedTotal % 60);
+        const estStr = formatToDayHourMin(Math.floor(estTotal / 60), estTotal % 60);
+
+        formatted += `\nTotal Worked Time: ${workedStr}\nTotal Estimated Time: ${estStr}`;
+
+        // Save analytics summary
+        const analytics = JSON.parse(localStorage.getItem('analytics') || '{}');
+        analytics[today] = {
+            workedMin: workedTotal,
+            estMin: estTotal,
+            tasks: lines.length
+        };
+        localStorage.setItem('analytics', JSON.stringify(analytics));
 
         localStorage.setItem('taskOutput', formatted.trim());
         navigate('/preview');
