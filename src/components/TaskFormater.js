@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const TaskFormatter = () => {
-    const [devName, setDevName] = useState('Deep Dungarani');
+    const [devName, setDevName] = useState('');
     const [taskText, setTaskText] = useState('');
     const navigate = useNavigate();
+
+    // Load devName from localStorage on first render
+    useEffect(() => {
+        const storedName = localStorage.getItem('devName');
+        if (storedName) {
+            setDevName(storedName);
+        }
+    }, []);
+
+    // Save devName to localStorage whenever it changes
+    useEffect(() => {
+        if (devName.trim() !== '') {
+            localStorage.setItem('devName', devName);
+        }
+    }, [devName]);
 
     const formatToDayHourMin = (hours, minutes) => {
         let totalMin = (parseInt(hours) * 60) + parseInt(minutes);
@@ -23,22 +38,22 @@ const TaskFormatter = () => {
     const generateFormattedText = () => {
         const lines = taskText.trim().split(/\n+/);
         const today = new Date().toLocaleDateString('en-GB').split('/').reverse().join('-');
-    
+
         let formatted = `Update List (${today})\nDeveloper Name:- ${devName}\n\n`;
-    
+
         for (let line of lines) {
             const match = line.match(/\(?\s*(IIS\/TSK-\d+)\)?\s*[-:)]?\s*(.*?)\s*-\s*Worked Time:\s*(\d{1,2}):(\d{1,2}):\d{1,2}\s*\/\s*Est\. Time:\s*(\d{1,2}):(\d{1,2})/i);
-    
+
             if (match) {
                 const [, taskId, title, wh, wm, eh, em] = match;
                 const workedMin = parseInt(wh) * 60 + parseInt(wm);
                 const estMin = parseInt(eh) * 60 + parseInt(em);
-    
+
                 const workedStr = formatToDayHourMin(wh, wm);
                 const estStr = formatToDayHourMin(eh, em);
-    
+
                 formatted += `${taskId} - ${title.trim()} - [${workedStr}] - [${estStr}] - \n`;
-    
+
                 if (workedMin > estMin * 1.1) {
                     formatted += `Reason:- \n`;
                 }
