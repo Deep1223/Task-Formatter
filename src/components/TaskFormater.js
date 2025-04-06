@@ -20,25 +20,39 @@ const TaskFormatter = () => {
         }
     }, [devName]);
 
-    useEffect(() => {
-        if (Notification.permission !== 'granted') {
-            Notification.requestPermission();
-        }
-
-        const now = new Date();
-        const reminderHour = 17;
-        const delay = new Date().setHours(reminderHour, 0, 0, 0) - now;
-
-        if (delay > 0) {
-            const timer = setTimeout(() => {
-                new Notification('🛠️ Reminder', {
-                    body: 'Don’t forget to update today’s task list!',
-                });
-            }, delay);
-            return () => clearTimeout(timer);
-        }
-    }, []);
-
+    // useEffect(() => {
+    //     console.log("Notification effect running...");
+    
+    //     if (!("Notification" in window)) {
+    //         alert("This browser does not support desktop notifications.");
+    //         return;
+    //     }
+    
+    //     if (Notification.permission !== 'granted') {
+    //         Notification.requestPermission().then(permission => {
+    //             console.log("Permission result:", permission);
+    //         });
+    //     }
+    
+    //     const now = new Date();
+    //     const reminderTime = new Date();
+    //     reminderTime.setHours(20, 13, 0, 0); // 7:10 PM
+    
+    //     const delay = reminderTime - now;
+    //     console.log("Notification delay (ms):", delay);
+    
+    //     if (delay > 0) {
+    //         const timer = setTimeout(() => {
+    //             console.log("Triggering Notification!");
+    //             new Notification("🚀 Test", { body: "This is a manual test notification." });
+    //         }, delay);
+    
+    //         return () => clearTimeout(timer);
+    //     } else {
+    //         console.log("Skipped notification: delay negative");
+    //     }
+    // }, []);
+    
     const formatToDayHourMin = (hours, minutes) => {
         let totalMin = (parseInt(hours) * 60) + parseInt(minutes);
         const days = Math.floor(totalMin / (24 * 60));
