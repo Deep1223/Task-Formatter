@@ -99,9 +99,6 @@ const TaskFormatter = () => {
             }
         }
 
-        const workedStr = formatToDayHourMin(Math.floor(workedTotal / 60), workedTotal % 60);
-        const estStr = formatToDayHourMin(Math.floor(estTotal / 60), estTotal % 60);
-
         // Save analytics summary
         const analytics = JSON.parse(localStorage.getItem('analytics') || '{}');
         analytics[today] = {
