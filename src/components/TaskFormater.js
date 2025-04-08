@@ -22,37 +22,37 @@ const TaskFormatter = () => {
 
     // useEffect(() => {
     //     console.log("Notification effect running...");
-    
+
     //     if (!("Notification" in window)) {
     //         alert("This browser does not support desktop notifications.");
     //         return;
     //     }
-    
+
     //     if (Notification.permission !== 'granted') {
     //         Notification.requestPermission().then(permission => {
     //             console.log("Permission result:", permission);
     //         });
     //     }
-    
+
     //     const now = new Date();
     //     const reminderTime = new Date();
     //     reminderTime.setHours(20, 13, 0, 0); // 7:10 PM
-    
+
     //     const delay = reminderTime - now;
     //     console.log("Notification delay (ms):", delay);
-    
+
     //     if (delay > 0) {
     //         const timer = setTimeout(() => {
     //             console.log("Triggering Notification!");
     //             new Notification("🚀 Test", { body: "This is a manual test notification." });
     //         }, delay);
-    
+
     //         return () => clearTimeout(timer);
     //     } else {
     //         console.log("Skipped notification: delay negative");
     //     }
     // }, []);
-    
+
     const formatToDayHourMin = (hours, minutes) => {
         let totalMin = (parseInt(hours) * 60) + parseInt(minutes);
         const days = Math.floor(totalMin / (24 * 60));
@@ -69,9 +69,10 @@ const TaskFormatter = () => {
 
     const generateFormattedText = () => {
         const lines = taskText.trim().split(/\n+/);
-        const today = new Date().toLocaleDateString('en-GB').split('/').reverse().join('-');
+        const today = new Date().toLocaleDateString('en-GB'); // '09/04/2024'
+        const formattedDate = today.replace(/\//g, '-');       // '09-04-2024'
 
-        let formatted = `Update List (${today})\nDeveloper Name:- ${devName}\n\n`;
+        let formatted = `Update List (${formattedDate})\nDeveloper Name:- ${devName}\n\n`;
 
         let workedTotal = 0;
         let estTotal = 0;
